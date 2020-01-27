@@ -120,13 +120,17 @@ class Matting:
     # leave the matting instance's dictionary entry unaffected and return
     # False, along with an error message
     def readImage(self, fileName, key):
-        success = False
-        msg = 'Placeholder'
+        success = True
+        msg = 'Read'
 
         #########################################
         ## PLACE YOUR CODE BETWEEN THESE LINES ##
         #########################################
-        
+        try:
+            self._images[key] = cv.imread(filename)
+        except:
+            success = False
+            msg = "Image read failed"
 
         #########################################
         return success, msg
@@ -139,13 +143,17 @@ class Matting:
     # The routine should return True if it succeeded. If it did not, it should
     # return False, along with an error message
     def writeImage(self, fileName, key):
-        success = False
-        msg = 'Placeholder'
+        success = True
+        msg = 'Write'
 
         #########################################
         ## PLACE YOUR CODE BETWEEN THESE LINES ##
         #########################################
-
+        try:
+            v.imwrite(filename, self._images[key])
+        except:
+            success = False
+            msg = "Image write failed"
 
         #########################################
         return success, msg
@@ -155,7 +163,7 @@ class Matting:
     # ojbect. 
     def triangulationMatting(self):
         """
-success, errorMessage = triangulationMatting(self)
+        success, errorMessage = triangulationMatting(self)
         
         Perform triangulation matting. Returns True if successful (ie.
         all inputs and outputs are valid) and False if not. When success=False
@@ -163,11 +171,69 @@ success, errorMessage = triangulationMatting(self)
         """
 
         success = False
-        msg = 'Placeholder'
+        msg = 'Matting'
 
         #########################################
         ## PLACE YOUR CODE BETWEEN THESE LINES ##
         #########################################
+        backA = self._images["backA"]
+        backB = self._images["backB"]
+        compA = self._images["compA"]
+        compB = self._images["compB"]
+
+        # error checking
+        if backA is None | backB is None | compA is None | compB is None:
+            msg = "Missing background or foreground images"
+            return success, msg
+
+        mSize = backA.shape
+        alpha = np.zeros(mSize[:2])
+        foreground = np.zeros(mSize)
+
+        for i in range(mSize[0]):
+            for j in range(mSize[1]):
+                try:
+                    C_delta = np.array([
+                        [compA[i][j][0] - backA[i][j][0]], #R_A
+                        [compA[i][j][1] - backA[i][j][1]], #G_A
+                        [compA[i][j][2] - backA[i][j][2]], #B_A
+                        [compB[i][j][0] - backB[i][j][0]], #R_B
+                        [compB[i][j][1] - backB[i][j][1]], #G_B
+                        [compB[i][j][2] - backB[i][j][2]]  #B_B
+                    ])
+                except:
+                    msg = "Assign C_delta error"
+                    return success, msg
+
+                try:
+                    B_0 = np.array([
+                        [1, 0, 0, -backA[i][j][0]], #R
+                        [0, 1, 0, -backA[i][j][1]], #G
+                        [0, 0, 1, -backA[i][j][2]], #B
+                        [1, 0, 0, -backB[i][j][0]], #R
+                        [0, 1, 0, -backB[i][j][1]], #G
+                        [0, 0, 1, -backB[i][j][2]]  #B
+                    ])
+                except:
+                    msg = "Assign B_0 error"
+                    return success, msg
+
+                try:
+                    result = np.matmul(np.linalg.pinv(B_0),C_delta)
+                except:
+                    msg = "Matrix calculation error"
+                    return success, msg
+                alpha[i][j] = result[3][0]
+                foreground[i][j] = np.array([
+                    [result[0][0], result[1][0], result[2][0]]
+                ])
+
+        self._images['colOut'] = foreground
+        self._images['alphaOut'] = alpha * 255
+        print foreground
+        print alpha
+        success = True
+        
 
         #########################################
 
@@ -176,20 +242,40 @@ success, errorMessage = triangulationMatting(self)
         
     def createComposite(self):
         """
-success, errorMessage = createComposite(self)
+        success, errorMessage = createComposite(self)
         
         Perform compositing. Returns True if successful (ie.
         all inputs and outputs are valid) and False if not. When success=False
         an explanatory error message should be returned.
-"""
+        """
 
         success = False
-        msg = 'Placeholder'
+        msg = 'Composite'
 
         #########################################
         ## PLACE YOUR CODE BETWEEN THESE LINES ##
         #########################################
+        alpha = self._images['alphaIn']
+        col = self._images['colIn']
+        back = self._images['backIn']
+        mSize = back.shape
+        comp = np.zeros(mSize)
 
+
+        for i in range(mSize[0]):
+            for j in range(mSize[1]):
+                pCol = col[i][j]
+                pAlpha = alpha[i][j]
+                pBack = back[i][j]
+                try:
+                    comp[i][j] = pAlpha * pCol + (1 - pAlpha) * pBack
+                except:
+                    msg = "Comp calculation error"
+                    return success, msg
+
+        self._images['compOut'] = comp 
+        print(comp)
+        success = True
         #########################################
 
         return success, msg

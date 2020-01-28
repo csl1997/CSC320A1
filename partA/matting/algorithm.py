@@ -182,7 +182,7 @@ class Matting:
         compB = self._images["compB"]
 
         # error checking
-        if backA is None | backB is None | compA is None | compB is None:
+        if backA is None or backB is None or compA is None or compB is None:
             msg = "Missing background or foreground images"
             return success, msg
 

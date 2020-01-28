@@ -46,13 +46,13 @@ C. RUNNING THE EXECUTABLES
 
     And here is the same run with the binary executable:
     
-    viscomp.cdf/viscomp --matting \
+    viscomp.cdf/viscomp/viscomp --matting \
                --backA ../test_images/tiny/flowers-backA.jpg \
                --backB ../test_images/tiny/flowers-backB.jpg \
                --compA ../test_images/tiny/flowers-compA.jpg \
                --compB ../test_images/tiny/flowers-compB.jpg \
-               --alphaOut alpha.tif \
-               --colOut col.tif
+               --alphaOut alpha_ans.tif \
+               --colOut col_ans.tif
     
 
   2. Image compositing 

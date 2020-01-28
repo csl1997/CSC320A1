@@ -257,7 +257,7 @@ class Matting:
         #########################################
         ## PLACE YOUR CODE BETWEEN THESE LINES ##
         #########################################
-        alpha = self._images['alphaIn']
+        alpha = self._images['alphaIn'] / 255
         col = self._images['colIn']
         back = self._images['backIn']
         mSize = back.shape

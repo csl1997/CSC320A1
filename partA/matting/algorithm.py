@@ -232,8 +232,8 @@ class Matting:
 
         self._images['colOut'] = foreground
         self._images['alphaOut'] = alpha * 255
-        cv.imshow("foreground", foreground)
-        cv.imshow("alpha", alpha * 255)
+        # cv.imshow("foreground", foreground)
+        # cv.imshow("alpha", alpha * 255)
         success = True
         
 
@@ -276,7 +276,7 @@ class Matting:
                     return success, msg
 
         self._images['compOut'] = comp 
-        print comp
+        cv.imshow("comp", comp)
         success = True
         #########################################
 

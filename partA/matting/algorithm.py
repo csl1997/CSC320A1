@@ -274,7 +274,7 @@ class Matting:
                     return success, msg
 
         self._images['compOut'] = comp 
-        print(comp)
+        print comp
         success = True
         #########################################
 

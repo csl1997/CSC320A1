@@ -127,7 +127,9 @@ class Matting:
         ## PLACE YOUR CODE BETWEEN THESE LINES ##
         #########################################
         try:
-            self._images[key] = cv.imread(fileName)
+            image = cv.imread(fileName)
+            image = image.astype(np.float64)
+            self._images[key] = image
         except:
             success = False
             msg = "Image read failed"
@@ -230,8 +232,8 @@ class Matting:
 
         self._images['colOut'] = foreground
         self._images['alphaOut'] = alpha * 255
-        cv.imshow(foreground)
-        cv.imshow(alpha * 255)
+        cv.imshow("foreground", foreground)
+        cv.imshow("alpha", alpha * 255)
         success = True
         
 

@@ -194,12 +194,12 @@ class Matting:
             for j in range(mSize[1]):
                 try:
                     C_delta = np.array([
-                        [compA[i][j][0] - backA[i][j][0]], #R_A
+                        [compA[i][j][2] - backA[i][j][2]], #R_A
                         [compA[i][j][1] - backA[i][j][1]], #G_A
-                        [compA[i][j][2] - backA[i][j][2]], #B_A
-                        [compB[i][j][0] - backB[i][j][0]], #R_B
+                        [compA[i][j][0] - backA[i][j][0]], #B_A
+                        [compB[i][j][2] - backB[i][j][2]], #R_B
                         [compB[i][j][1] - backB[i][j][1]], #G_B
-                        [compB[i][j][2] - backB[i][j][2]]  #B_B
+                        [compB[i][j][0] - backB[i][j][0]]  #B_B
                     ])
                 except:
                     msg = "Assign C_delta error"
@@ -207,12 +207,12 @@ class Matting:
 
                 try:
                     B_0 = np.array([
-                        [1, 0, 0, -backA[i][j][0]], #R
+                        [1, 0, 0, -backA[i][j][2]], #R
                         [0, 1, 0, -backA[i][j][1]], #G
-                        [0, 0, 1, -backA[i][j][2]], #B
-                        [1, 0, 0, -backB[i][j][0]], #R
+                        [0, 0, 1, -backA[i][j][0]], #B
+                        [1, 0, 0, -backB[i][j][2]], #R
                         [0, 1, 0, -backB[i][j][1]], #G
-                        [0, 0, 1, -backB[i][j][2]]  #B
+                        [0, 0, 1, -backB[i][j][0]]  #B
                     ])
                 except:
                     msg = "Assign B_0 error"
@@ -225,13 +225,13 @@ class Matting:
                     return success, msg
                 alpha[i][j] = result[3][0]
                 foreground[i][j] = np.array([
-                    [result[0][0], result[1][0], result[2][0]]
+                    [result[2][0], result[1][0], result[0][0]]
                 ])
 
         self._images['colOut'] = foreground
         self._images['alphaOut'] = alpha * 255
-        print foreground
-        print alpha
+        cv.imshow(foreground)
+        cv.imshow(alpha * 255)
         success = True
         
 

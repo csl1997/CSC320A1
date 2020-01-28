@@ -276,7 +276,7 @@ class Matting:
                     return success, msg
 
         self._images['compOut'] = comp 
-        cv.imshow("comp", comp)
+        # cv.imshow("comp", comp)
         success = True
         #########################################
 

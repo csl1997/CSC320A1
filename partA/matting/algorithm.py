@@ -127,7 +127,7 @@ class Matting:
         ## PLACE YOUR CODE BETWEEN THESE LINES ##
         #########################################
         try:
-            self._images[key] = cv.imread(filename)
+            self._images[key] = cv.imread(fileName)
         except:
             success = False
             msg = "Image read failed"
@@ -150,7 +150,7 @@ class Matting:
         ## PLACE YOUR CODE BETWEEN THESE LINES ##
         #########################################
         try:
-            v.imwrite(filename, self._images[key])
+            cv.imwrite(fileName, self._images[key])
         except:
             success = False
             msg = "Image write failed"
